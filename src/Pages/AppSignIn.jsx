@@ -36,11 +36,11 @@ function AppSignIn() {
                         <h1 className="txtDarkgreen mt-2">Login</h1>
                         <form onSubmit={handleSignIn} className="p-3 ">
                             <div className="mb-3 ">
-                                <label HTMLfor="email" className="form-label ">Email address</label>
+                                <label htmlFor="email" className="form-label ">Email address</label>
                                 <input type="email" className="form-control" id="email" aria-describedby="emailHelp" name="email" />
                             </div>
                             <div className="mb-3 ">
-                                <label HTMLfor="password" className="form-label ">Password</label>
+                                <label htmlFor="password" className="form-label ">Password</label>
                                 <input type="password" className="form-control" id="password" name="password" />
                             </div>
 

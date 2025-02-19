@@ -45,23 +45,23 @@ function AppSignUp() {
                         <h1 className="txtDarkgreen mt-2">Register</h1>
                         <form onSubmit={handleSubmission} className="p-3">
                             <div className="mb-3">
-                                <label HTMLfor="username" className="form-label">Username</label>
+                                <label htmlFor="username" className="form-label">Username</label>
                                 <input type="text" className="form-control" id="username" aria-describedby="emailHelp" name="username" />
                             </div>
                             <div className="mb-3">
-                                <label HTMLfor="first_name" className="form-label">First Name</label>
+                                <label htmlFor="first_name" className="form-label">First Name</label>
                                 <input type="text" className="form-control" id="first_name" aria-describedby="emailHelp" name="first_name" />
                             </div>
                             <div className="mb-3">
-                                <label HTMLfor="last_name" className="form-label">Last Name</label>
+                                <label htmlFor="last_name" className="form-label">Last Name</label>
                                 <input type="text" className="form-control" id="last_name" aria-describedby="emailHelp" name="last_name" />
                             </div>
                             <div className="mb-3">
-                                <label HTMLfor="email" className="form-label">Email address</label>
+                                <label htmlFor="email" className="form-label">Email address</label>
                                 <input type="email" className="form-control" id="email" aria-describedby="emailHelp" name="email" />
                             </div>
                             <div className="mb-3">
-                                <label HTMLfor="password" className="form-label">Password</label>
+                                <label htmlFor="password" className="form-label">Password</label>
                                 <input type="password" className="form-control" id="password" name="password" />
                             </div>
 

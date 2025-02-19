@@ -17,6 +17,9 @@ function ProtectedRoutes() {
     return <Outlet />;
 }
 
+
+
+
 // Aggiungi l'elemento AppLayout come wrapper per le rotte protette
 const router = createBrowserRouter([
     {

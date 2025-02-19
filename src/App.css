@@ -175,6 +175,17 @@ nav {
 
 .main-name {
   text-decoration: underline var(--blue);
+  transition: 0.3s;
+}
+
+.main-name:hover {
+  text-decoration: none;
+  color: var(--blue);
+  cursor: pointer;
+}
+
+.info{
+  cursor: pointer;
 }
 
 .btn-delete {

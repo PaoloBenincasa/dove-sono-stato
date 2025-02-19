@@ -1,4 +1,4 @@
-import { useEffect, useState, useContext } from "react";
+import { useEffect, useState, useContext, useRef } from "react";
 import supabase from "../supabase/client";
 import Map from "../components/Map";
 import Search from "../components/Search";
@@ -12,7 +12,13 @@ export default function AppProfile() {
     const [savedPlaces, setSavedPlaces] = useState([]);
     const [selectedCollections, setSelectedCollections] = useState([]);
     const session = useContext(SessionContext);
-    
+    const placeRefs = useRef({});
+    const mapSectionRef = useRef(null);
+    const [selectedCollectionsFilter, setSelectedCollectionsFilter] = useState([]);
+
+
+
+
 
     // Ottieni le raccolte dal contesto
     const { collections, setCollections } = useContext(CollectionsContext);
@@ -55,21 +61,11 @@ export default function AppProfile() {
     }, [session]);
 
 
-
-
     // filtro i luoghi in base alla raccolta selezionata
     const filteredPlaces = selectedCollections.length > 0
         ? savedPlaces.filter(place => selectedCollections.includes(place.collection_id))
         : savedPlaces;
 
-    // seleziono le raccolte col toggle
-    const toggleCollection = (collectionId) => {
-        setSelectedCollections((prevSelected) =>
-            prevSelected.includes(collectionId)
-                ? prevSelected.filter(id => id !== collectionId)
-                : [...prevSelected, collectionId]
-        );
-    };
 
     // aggiungo un nuovo luogo alla lista
     const handleSave = (newPlace) => {
@@ -98,6 +94,38 @@ export default function AppProfile() {
         setCollections(updatedCollections);
     };
 
+    const handleScrollToPlace = (placeId) => {
+        // prima vado alla sezione della Map
+        if (mapSectionRef.current) {
+            mapSectionRef.current.scrollIntoView({ behavior: "smooth", block: "start" });
+        }
+
+        // vado al marker corrispondente al luogo
+        window.dispatchEvent(new CustomEvent("scrollToMarker", { detail: placeId }));
+
+    };
+
+    const toggleInfo = (placeId) => {
+        const details = document.querySelector(`#details-${placeId}`);
+        if (details) {
+            details.classList.toggle("d-none");
+        }
+    };
+
+    const handleCollectionFilterChange = (collectionId) => {
+        setSelectedCollectionsFilter(prev =>
+            prev.includes(collectionId)
+                ? prev.filter(id => id !== collectionId) 
+                : [...prev, collectionId] 
+        );
+    };
+
+    const filteredPlacesList = selectedCollectionsFilter.length > 0
+        ? savedPlaces.filter(place => place.collection_id && selectedCollectionsFilter.includes(place.collection_id))
+        : savedPlaces;
+
+
+
     if (!session) {
         return <p>Caricamento...</p>;
     }
@@ -105,54 +133,92 @@ export default function AppProfile() {
     return (
         <div className="profile">
             <div className="collections pt-5">
-                <h2 className="txtWhite pt-4 ">Crea le tue raccolte</h2>
+                <h4 className="txtWhite pt-4 ">Crea le tue raccolte</h4>
                 <p className="txtGrey">organizza i tuoi posti del cuore in raccolte divise come più preferisci</p>
                 <div className="">
                     <CreateCollectionForm setCollections={setCollections} collections={collections} />
                 </div>
             </div>
             <div className="">
-                <h2 className="mt-3 pt-5  txtWhite">Ricerca</h2>
+                <h4 className="mt-3 pt-5  txtWhite">Ricerca</h4>
                 <Search onSave={(newPlace) => handleSave(newPlace)} />
             </div>
-            <div className="map-container ">
-                <Map savedPlaces={filteredPlaces} updateCollections={updateCollections} />
+            <div className="map-container " ref={mapSectionRef}>
+                <Map
+                    savedPlaces={filteredPlaces}
+                    updateCollections={updateCollections}
+                    handleScrollToPlace={handleScrollToPlace}
+                />
             </div>
-            <div className="txtWhite ">
-                <h2 className="pt-5">Tutti i luoghi che hai visitato</h2>
-                <div className="">
-                    <div className="collections-filter">
-                        {collections.map(collection => (
-                            <button
-                                key={collection.id}
-                                className={`btn ${selectedCollections.includes(collection.id) ? 'btn-cta' : 'btn-add'} ms-1`}
-                                onClick={() => toggleCollection(collection.id)}
-                            >
-                                {collection.name}
-                            </button>
-                        ))}
-                    </div>
+        
+            <div className="txtWhite places-list ">
+                <h4 className="pt-5">Tutti i luoghi che hai visitato</h4>
+
+                {/* Checkbox per filtrare per collezione */}
+                <div className="mb-3">
+                    <h5 className="mt-3">Filtra per raccolta</h5>
+                    {collections.map((collection) => (
+                        <div key={collection.id} className="ms-4">
+                            <label>
+                                <input
+                                    type="checkbox"
+                                    checked={selectedCollectionsFilter.includes(collection.id)}
+                                    onChange={() => handleCollectionFilterChange(collection.id)}
+                                />
+                                <span className="ms-2">{collection.name}</span>
+                            </label>
+                        </div>
+                    ))}
                 </div>
-                {filteredPlaces.length > 0 ? (
-                    <ul className="mt-4">
-                        {filteredPlaces.map((place) => {
-                            const [mainName, ...rest] = place.name.split(",");
-                            return (
-                                <li key={place.id} className="list-unstyled">
-                                    <span className="main-name">{mainName}</span>
-                                    {rest.length > 0 && (
-                                        <span className="secondary-name">{rest.join(",")}</span>
-                                    )}
-                                    <span className="ps-1 btn-delete" onClick={() => handleDelete(place.id)}>
-                                        Elimina
-                                    </span>
-                                </li>
-                            )
-                        })}
-                    </ul>
-                ) : (
-                    <p className="mt-2 txtGrey">Non hai ancora salvato nessun luogo.</p>
-                )}
+
+                <ul className="mt-4">
+                    {filteredPlacesList.map((place) => {
+                        const [mainName, ...rest] = place.name.split(",");
+
+                        return (
+                            <li
+                                key={place.id}
+                                ref={(el) => (placeRefs.current[place.id] = el)}
+                                className="list-unstyled"
+                            >
+                                <span
+                                    className="main-name"
+                                    onClick={() => handleScrollToPlace(place.id)}
+                                >
+                                    {mainName}
+                                </span>
+                                <span
+                                    className="txtGrey info ms-1"
+                                    onClick={() => toggleInfo(place.id)}
+                                >
+                                    info
+                                </span>
+                                <div id={`details-${place.id}`} className="d-none p-2">
+                                    <div>
+                                        {rest.length > 0 && <span className="secondary-name">{rest.join(",")}</span>}
+                                        <span className="ps-1 btn-delete" onClick={() => handleDelete(place.id)}>
+                                            Elimina luogo
+                                        </span>
+                                    </div>
+                                    <div>
+                                        <span
+                                            style={{
+                                                backgroundColor: place.collections?.color || "gray",
+                                                borderRadius: "50%",
+                                                height: "12px",
+                                                width: "12px",
+                                                display: "inline-block"
+                                            }}
+                                        ></span>
+                                        <span className="ms-2">
+                                            {place.collections?.name || "Senza nome"}
+                                        </span>
+                                    </div>
+                                </div>
+                            </li>
+                        );
+                    })}
+                </ul>
             </div>
         </div>
     );
