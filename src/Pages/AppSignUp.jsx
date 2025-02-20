@@ -39,33 +39,33 @@ function AppSignUp() {
     };
     return (
         <>
-            <div className="h-100 w-100 container-fluid bgDarkgreen pt-5">
-                <div className="row mt-4c mb-2 align-items-center justify-content-center">
-                    <div className="col-md-6 bg-white rounded shadow">
+            <div className="container-fluid vh-100 bgDarkgreen pt-5">
+                <div className="row mt-4 mb-2 h-75 align-items-center justify-content-center">
+                    <div className="col-md-6 col-11 bg-white rounded shadow p-1">
                         <h1 className="txtDarkgreen mt-2">Register</h1>
                         <form onSubmit={handleSubmission} className="p-3">
-                            <div className="mb-3">
+                            <div className="mb-2">
                                 <label htmlFor="username" className="form-label">Username</label>
                                 <input type="text" className="form-control" id="username" aria-describedby="emailHelp" name="username" />
                             </div>
-                            <div className="mb-3">
+                            <div className="mb-2">
                                 <label htmlFor="first_name" className="form-label">First Name</label>
                                 <input type="text" className="form-control" id="first_name" aria-describedby="emailHelp" name="first_name" />
                             </div>
-                            <div className="mb-3">
+                            <div className="mb-2">
                                 <label htmlFor="last_name" className="form-label">Last Name</label>
                                 <input type="text" className="form-control" id="last_name" aria-describedby="emailHelp" name="last_name" />
                             </div>
-                            <div className="mb-3">
+                            <div className="mb-2">
                                 <label htmlFor="email" className="form-label">Email address</label>
                                 <input type="email" className="form-control" id="email" aria-describedby="emailHelp" name="email" />
                             </div>
-                            <div className="mb-3">
+                            <div className="mb-2">
                                 <label htmlFor="password" className="form-label">Password</label>
                                 <input type="password" className="form-control" id="password" name="password" />
                             </div>
 
-                            <button type="submit" className="btn btn-search mb-3 mt-1">Submit</button>
+                            <button type="submit" className="btn btn-search mb-2 mt-1">Submit</button>
                             <p>Hai già un account? <Link to={`/signin`}>accedi</Link> </p>
 
                         </form>

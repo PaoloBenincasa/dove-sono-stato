@@ -35,7 +35,7 @@ nav {
 }
 
 .hero {
-  background: url("src/assets/simon5.jpg");
+  background: url("/simon5.jpg");
   background-size: cover;
   background-position: bottom;
   background-repeat: no-repeat;

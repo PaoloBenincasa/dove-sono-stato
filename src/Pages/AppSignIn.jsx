@@ -32,7 +32,7 @@ function AppSignIn() {
         <>
             <div className="container-fluid pt-5 bgDarkgreen h-100 ">
                 <div className="row mt-5 align-items-center justify-content-center">
-                    <div className="col-md-6 bg-white rounded shadow">
+                    <div className="col-md-6 col-11 bg-white rounded shadow p-2">
                         <h1 className="txtDarkgreen mt-2">Login</h1>
                         <form onSubmit={handleSignIn} className="p-3 ">
                             <div className="mb-3 ">
