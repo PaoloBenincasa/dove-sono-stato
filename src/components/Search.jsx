@@ -5,7 +5,7 @@ import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
 const searchPlaceByName = async (query) => {
-    const url = `https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(query)}&format=json&addressdetails=1&limit=5`;
+    const url = `https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(query)}&format=json&addressdetails=1&limit=30`;
 
     const response = await fetch(url, {
         headers: {
@@ -58,39 +58,6 @@ export default function Search({ onSave }) {
         fetchUser();
     }, []);
 
-    // const handleSavePlace = async (place) => {
-    //     if (!user) {
-    //         alert("Devi essere loggato per salvare un luogo.");
-    //         return;
-    //     }
-
-    //     if (!selectedCollection) {
-    //         alert("Devi selezionare una raccolta.");
-    //         return;
-    //     }
-
-    //     try {
-    //         const { data, error } = await supabase
-    //             .from("saved_places")
-    //             .insert([{
-    //                 name: place.display_name,
-    //                 latitude: parseFloat(place.lat),
-    //                 longitude: parseFloat(place.lon),
-    //                 user_id: user.id,
-    //                 collection_id: selectedCollection,
-    //             }])
-    //             .select("*, collections(id, name, color)")
-    //             .single();
-
-    //         if (error) throw error;
-
-    //         alert("Luogo salvato con successo!");
-    //         if (onSave) onSave(data);
-    //     } catch (err) {
-    //         console.error("Errore nel salvataggio del luogo:", err);
-    //         alert("Errore nel salvataggio. Riprova.");
-    //     }
-    // };
 
     const handleSavePlace = async (place) => {
     if (!user) {

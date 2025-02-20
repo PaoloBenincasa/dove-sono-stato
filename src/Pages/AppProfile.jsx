@@ -16,14 +16,10 @@ export default function AppProfile() {
     const mapSectionRef = useRef(null);
     const [selectedCollectionsFilter, setSelectedCollectionsFilter] = useState([]);
 
-
-
-
-
-    // Ottieni le raccolte dal contesto
+    // prendo le raccolte dal contesto
     const { collections, setCollections } = useContext(CollectionsContext);
 
-    // Fetch dei luoghi salvati
+    // fetcho i luoghi salvati
     useEffect(() => {
         if (session) {
             const fetchSavedPlaces = async () => {

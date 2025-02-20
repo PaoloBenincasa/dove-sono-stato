@@ -19,7 +19,7 @@ export default function AppHome() {
         <>
             <div className="hero d-flex justify-content-center">
                 <div className="text-center hero-content">
-                    <h1>dove sono stato?</h1>
+                    <h1>my places</h1>
                     <h6>
                         una mappa di tutti posti che hai visitato. <br />
                         montagne, laghi, città, monumenti, locali. <br />

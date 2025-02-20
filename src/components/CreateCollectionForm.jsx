@@ -1,5 +1,5 @@
 import { useState, useContext } from "react";
-import CollectionsContext from '../context/CollectionsContext'; // Importa il contesto
+import CollectionsContext from '../context/CollectionsContext'; 
 import SessionContext from '../context/SessionContext';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
@@ -20,7 +20,7 @@ const CreateCollectionForm = () => {
             const { data, error } = await supabase
                 .from("collections")
                 .insert([{
-                    user_id: session.user.id,  // Assicurati che 'session.user' sia disponibile, altrimenti aggiungi un controllo
+                    user_id: session.user.id,  
                     name: collectionName,
                     color: collectionColor
                 }])
