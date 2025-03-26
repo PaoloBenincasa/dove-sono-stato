@@ -6,7 +6,6 @@ import 'react-toastify/dist/ReactToastify.css';
 import supabase from "../supabase/client";
 
 const CreateCollectionForm = () => {
-    // Usa il contesto per ottenere collections e setCollections
     const { collections, setCollections } = useContext(CollectionsContext);
     const [collectionName, setCollectionName] = useState("");
     const [collectionColor, setCollectionColor] = useState("#000000");
@@ -31,14 +30,11 @@ const CreateCollectionForm = () => {
                 return;
             }
 
-            // Aggiungi la nuova raccolta alla lista delle raccolte
             setCollections(prevCollections => [...prevCollections, ...data]);
 
-            // Resetta i campi del form
             setCollectionName("");
             setCollectionColor("#000000");
 
-            // Mostra il toast di successo
             toast.success("Raccolta creata con successo!");
         } catch (error) {
             console.error("Errore durante la creazione della raccolta:", error);

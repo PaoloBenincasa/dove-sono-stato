@@ -1,6 +1,6 @@
 import { useState, useEffect, useContext } from "react";
 import supabase from "../supabase/client";
-import CollectionsContext from "../context/CollectionsContext";  // Importa il contesto
+import CollectionsContext from "../context/CollectionsContext"; 
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
@@ -71,7 +71,6 @@ export default function Search({ onSave }) {
     }
 
     try {
-        // Controllo se il luogo esiste già
         const { data: existingPlaces, error: checkError } = await supabase
             .from("saved_places")
             .select("*")
@@ -82,12 +81,10 @@ export default function Search({ onSave }) {
         if (checkError) throw checkError;
 
         if (existingPlaces.length > 0) {
-            // alert("Hai già salvato questo luogo in questa raccolta.");
             toast.error("Hai già salvato questo luogo in questa raccolta.")
             return;
         }
 
-        // Se non esiste, procedi con l'inserimento
         const { data, error } = await supabase
             .from("saved_places")
             .insert([{
@@ -102,7 +99,6 @@ export default function Search({ onSave }) {
 
         if (error) throw error;
 
-        // alert("Luogo salvato con successo!");
         toast.success("luogo salvato con successo!")
         if (onSave) onSave(data);
     } catch (err) {
@@ -113,7 +109,7 @@ export default function Search({ onSave }) {
 
 
     return (
-        <div className="p-4 gap-1">
+        <div className="p-4 ">
             <input
                 type="text"
                 placeholder="Cerca un luogo..."
@@ -121,7 +117,7 @@ export default function Search({ onSave }) {
                 onChange={(e) => setQuery(e.target.value)}
                 className="border p-2 rounded txtDarkgreen"
             />
-            <span onClick={handleSearch} className="ms-1 mb-1 btn btn-search">
+            <span onClick={handleSearch} className="ms-1 mb-1 btn btn-search ">
                 Cerca
             </span>
 

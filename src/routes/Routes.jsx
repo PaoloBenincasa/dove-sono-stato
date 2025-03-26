@@ -20,11 +20,10 @@ function ProtectedRoutes() {
 
 
 
-// Aggiungi l'elemento AppLayout come wrapper per le rotte protette
 const router = createBrowserRouter([
     {
         path: "/",
-        element: <AppLayout />, // AppLayout viene applicato su tutte le route principali
+        element: <AppLayout />, 
         children: [
             {
                 path: "/",
@@ -39,7 +38,7 @@ const router = createBrowserRouter([
                 element: <AppSignIn />,
             },
             {
-                element: <ProtectedRoutes />, // Wrapper per le route protette
+                element: <ProtectedRoutes />, 
                 children: [
                     {
                         path: "/profile",

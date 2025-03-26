@@ -1,12 +1,11 @@
 import { useState, useEffect } from "react";
 import supabase from "../supabase/client";
-import CollectionsContext from "./CollectionsContext"; // Importa il context
+import CollectionsContext from "./CollectionsContext"; 
 
 const CollectionsContextProvider = ({ children }) => {
   const [collections, setCollections] = useState([]);
   const [selectedCollections, setSelectedCollections] = useState([]);
 
-  // Carica tutte le raccolte dell'utente
   useEffect(() => {
     const fetchCollections = async () => {
       const { data, error } = await supabase
@@ -23,7 +22,6 @@ const CollectionsContextProvider = ({ children }) => {
     fetchCollections();
   }, []);
 
-  // Aggiungi o rimuovi una raccolta dalle selezioni
   const handleCollectionChange = (collectionId) => {
     setSelectedCollections((prev) => {
       if (prev.includes(collectionId)) {
@@ -34,7 +32,6 @@ const CollectionsContextProvider = ({ children }) => {
     });
   };
 
-  // Elimina una raccolta
   const handleDeleteCollection = async (id) => {
     const confirmDelete = window.confirm("Sei sicuro di voler eliminare questa raccolta?");
     
@@ -66,4 +63,4 @@ const CollectionsContextProvider = ({ children }) => {
   );
 }
 
-export default CollectionsContextProvider;  // Assicurati che l'export sia default
+export default CollectionsContextProvider; 
