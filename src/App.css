@@ -136,6 +136,10 @@ nav {
   width: 25%;
 }
 
+.underBlue{
+  text-decoration: underline var(--blue);
+}
+
 @media screen and (max-width: 480px) {
   .profile{
     display: flex;
@@ -176,6 +180,7 @@ nav {
 .main-name {
   text-decoration: underline var(--blue);
   transition: 0.3s;
+  /* color: var(--white); */
 }
 
 .main-name:hover {

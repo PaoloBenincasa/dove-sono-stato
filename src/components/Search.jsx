@@ -113,7 +113,7 @@ export default function Search({ onSave }) {
 
 
     return (
-        <div className="p-4">
+        <div className="p-4 gap-1">
             <input
                 type="text"
                 placeholder="Cerca un luogo..."
