@@ -278,7 +278,8 @@ nav {
 .search-results {
   position: absolute;
   top: 100%;
-  width: 250%;
+  right: -87%;
+  width: 270%;
   max-height: 80vh;
   overflow-y: auto;
   background-color: #fff;
@@ -287,6 +288,20 @@ nav {
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
   z-index: 1;
 }
+
+/* .search-results{
+  position: absolute;
+  top: 100%;
+  right: -45%;
+  width: 140%;
+  max-height: 80vh;
+  overflow-y: auto;
+  background-color: #fff;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  z-index: 1;
+} */
 
 .mapCollectionName {
   font-size: medium;

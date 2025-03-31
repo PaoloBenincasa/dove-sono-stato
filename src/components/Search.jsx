@@ -159,11 +159,11 @@ export default function Search() {
                 placeholder="Cerca un luogo..."
                 value={query}
                 onChange={handleInputChange}
-                className="border p-2 rounded"
+                className="border p-2 rounded input-search ms-2"
             />
 
             {loading &&
-                <div class="d-flex justify-content-center">
+                <div class="d-flex justify-content-center loading">
                     <div class="spinner-border txtWhite ms-2" role="status">
                         <span class="visually-hidden">Loading...</span>
                     </div>
@@ -178,7 +178,7 @@ export default function Search() {
                                 <button
                                     type="button"
                                     className="btn-results btn text-start text-decoration-none w-100"
-                                    onClick={() => handlePlaceClick(place)} // Usa handlePlaceClick
+                                    onClick={() => handlePlaceClick(place)} 
                                 >
                                     {place.display_name} ({place.lat}, {place.lon})
                                 </button>
