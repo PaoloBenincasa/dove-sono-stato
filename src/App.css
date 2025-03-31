@@ -332,6 +332,10 @@ nav {
     display: none;
   }
 
+  .input-search{
+    overflow: hidden;
+  }
+
   .account-container-resp {
     display: inline-block;
   }

@@ -159,13 +159,12 @@ export default function Search() {
                 placeholder="Cerca un luogo..."
                 value={query}
                 onChange={handleInputChange}
-                className="border p-2 rounded input-search ms-2"
+                className="border p-2 rounded input-search"
             />
 
             {loading &&
-                <div class="d-flex justify-content-center loading">
-                    <div class="spinner-border txtWhite ms-2" role="status">
-                        <span class="visually-hidden">Loading...</span>
+                <div className="d-flex justify-content-center loading">
+                    <div className="spinner-border txtWhite ms-2" role="status">
                     </div>
                 </div>}
             {error && <p className="mt-4 text-danger">{error}</p>}

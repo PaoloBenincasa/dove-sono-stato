@@ -33,13 +33,13 @@ export default function AppNavbar() {
     return (
         <nav className={`${isScrolled ? 'scrolled' : ''}`}>
 
-            <div className="col-md-4 col-2 home-container text-center ">
+            <div className="col-md-4 col-0 home-container text-center ">
                 <Link to="/" className="home-link">
                     home
                 </Link>
             </div>
 
-            <div className="search-container col-8 col-md-4">
+            <div className="search-container col-10 col-md-4">
                 <Search onSave={(newPlace) => handleSave(newPlace)} />
             </div>
 
