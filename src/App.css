@@ -370,8 +370,8 @@ nav {
   .search-results{
     position: absolute;
     top: 100%;
-    right: -45%;
-    width: 140%;
+    right: -10%;
+    width: 100%;
     max-height: 80vh;
     overflow-y: auto;
     background-color: #fff;
