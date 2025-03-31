@@ -45,24 +45,24 @@ export default function Map({ savedPlaces }) {
 
 
   return (
-    <div>
-      <h4 className="mb-4 txtWhite underBlue">Seleziona le raccolte da visualizzare</h4>
+    <div className="container">
+      <h4 className="mb-2 pt-3 txtWhite underBlue">Seleziona le raccolte da visualizzare</h4>
       {collections.map((collection) => (
-        <div key={collection.id} className="ms-4 ">
+        <div key={collection.id} className="ms-3 ">
           <label>
             <input
               type="checkbox"
               checked={selectedCollections.includes(collection.id)}
               onChange={() => handleCollectionChange(collection.id)}
             />
-            <span className="txtWhite ms-1 fs-5">{collection.name}</span>
+            <span className="txtWhite ms-1 mapCollectionName">{collection.name}</span>
           </label>
-          <span
+          <small
             className="btn-delete ms-2"
             onClick={() => handleDeleteCollection(collection.id)}
           >
-            Elimina
-          </span>
+            elimina
+          </small>
         </div>
       ))}
 

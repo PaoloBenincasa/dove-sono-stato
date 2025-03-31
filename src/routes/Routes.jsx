@@ -6,6 +6,7 @@ import AppSignUp from '../Pages/AppSignUp';
 import AppHome from '../Pages/AppHome';
 import AppLayout from '../Layout/AppLayout';
 import AppProfile from '../Pages/AppProfile';
+import AppPlace from '../Pages/AppPlace';
 
 function ProtectedRoutes() {
     const session = useContext(SessionContext);
@@ -23,7 +24,7 @@ function ProtectedRoutes() {
 const router = createBrowserRouter([
     {
         path: "/",
-        element: <AppLayout />, 
+        element: <AppLayout />,
         children: [
             {
                 path: "/",
@@ -38,7 +39,12 @@ const router = createBrowserRouter([
                 element: <AppSignIn />,
             },
             {
-                element: <ProtectedRoutes />, 
+                path: "/place/:placeId",
+                element:
+                        <AppPlace />
+            },
+            {
+                element: <ProtectedRoutes />,
                 children: [
                     {
                         path: "/profile",

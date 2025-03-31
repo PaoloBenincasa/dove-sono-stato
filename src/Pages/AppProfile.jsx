@@ -15,6 +15,8 @@ export default function AppProfile() {
     const placeRefs = useRef({});
     const mapSectionRef = useRef(null);
     const [selectedCollectionsFilter, setSelectedCollectionsFilter] = useState([]);
+    const [searchTerm, setSearchTerm] = useState("");
+
 
     // prendo le raccolte dal contesto
     const { collections, setCollections } = useContext(CollectionsContext);
@@ -111,16 +113,30 @@ export default function AppProfile() {
     const handleCollectionFilterChange = (collectionId) => {
         setSelectedCollectionsFilter(prev =>
             prev.includes(collectionId)
-                ? prev.filter(id => id !== collectionId) 
-                : [...prev, collectionId] 
+                ? prev.filter(id => id !== collectionId)
+                : [...prev, collectionId]
         );
     };
 
     const filteredPlacesList = selectedCollectionsFilter.length > 0
-        ? savedPlaces.filter(place => place.collection_id && selectedCollectionsFilter.includes(place.collection_id))
-        : savedPlaces;
+        ? savedPlaces.filter(place => 
+            place.collection_id && 
+            selectedCollectionsFilter.includes(place.collection_id) &&
+            place.name.toLowerCase().includes(searchTerm.toLowerCase())
+        )
+        : savedPlaces.filter(place=> place.name.toLowerCase().includes(searchTerm.toLowerCase()));
 
+    useEffect(() => {
+        const handlePlaceSaved = (event) => {
+            setSavedPlaces((prevPlaces) => [...prevPlaces, event.detail]);
+        };
 
+        window.addEventListener("placeSaved", handlePlaceSaved);
+
+        return () => {
+            window.removeEventListener("placeSaved", handlePlaceSaved);
+        };
+    }, []);
 
     if (!session) {
         return <p>Caricamento...</p>;
@@ -128,44 +144,54 @@ export default function AppProfile() {
 
     return (
         <div className="profile">
-            <div className="collections pt-5 ">
-                <h4 className="txtWhite pt-4 underBlue ">Crea le tue raccolte</h4>
-                <p className="txtGrey">organizza i tuoi posti del cuore in raccolte divise come più preferisci</p>
-                <div className="">
+            <div className="collections pt-3 pb-5 d-flex flex-column align-items-start  max-h-75 p-1 bgDarkgreen container">
+
+                <div className="w-100">
                     <CreateCollectionForm setCollections={setCollections} collections={collections} />
                 </div>
             </div>
-            <div className="">
-                <h4 className="mt-3 pt-5 underBlue  txtWhite">Ricerca</h4>
-                <p className="txtGrey">cerca i luoghi e aggiungili alle tue raccolte</p>
-                <Search onSave={(newPlace) => handleSave(newPlace)} />
-            </div>
-            <div className="map-container  " ref={mapSectionRef}>
+            <div className="map-container" ref={mapSectionRef}>
                 <Map
                     savedPlaces={filteredPlaces}
                     updateCollections={updateCollections}
                     handleScrollToPlace={handleScrollToPlace}
                 />
             </div>
-        
-            <div className="txtWhite places-list ">
+
+            <div className="txtWhite places-list container ">
                 <h4 className="pt-5 underBlue">Tutti i luoghi che hai visitato</h4>
 
                 <div className="mb-3">
-                    <h5 className="mt-3">Filtra per raccolta</h5>
+                    <h5 className="mt-3 ms-1 fs-6 txtGrey">Filtra per raccolta</h5>
                     {collections.map((collection) => (
-                        <div key={collection.id} className="ms-4">
-                            <label>
-                                <input
-                                    type="checkbox"
-                                    checked={selectedCollectionsFilter.includes(collection.id)}
-                                    onChange={() => handleCollectionFilterChange(collection.id)}
-                                />
-                                <span className="ms-2">{collection.name}</span>
-                            </label>
+                        <div
+                            key={collection.id}
+                            className={`${selectedCollectionsFilter.includes(collection.id) ? 'active' : ''}`}
+                            onClick={() => handleCollectionFilterChange(collection.id)}
+                            style={{
+                                backgroundColor: selectedCollectionsFilter.includes(collection.id) ? collection.color : 'transparent',
+                                marginLeft: '5px',
+                                marginTop: '3px',
+                                marginBottom: '3px',
+                                paddingLeft: '8px',
+                                paddingRight: '8px',
+                                borderRadius: '1%',
+                                cursor: 'pointer',
+                                border: '1px solid grey',
+                                display: 'inline-block'
+                            }}
+                        >
+                            {selectedCollectionsFilter.includes(collection.id) ? '✓' : '+'} {collection.name}
                         </div>
                     ))}
                 </div>
+                <input
+                    type="text"
+                    placeholder="Cerca tra i tuoi luoghi..."
+                    value={searchTerm}
+                    onChange={(e) => setSearchTerm(e.target.value)}
+                    className="form-control listSearch mb-3 ms-2"
+                />
 
                 <ul className="mt-4">
                     {filteredPlacesList.map((place) => {
@@ -183,18 +209,18 @@ export default function AppProfile() {
                                 >
                                     {mainName}
                                 </span>
-                                <span
+                                <small
                                     className="txtGrey info ms-1"
                                     onClick={() => toggleInfo(place.id)}
                                 >
                                     info
-                                </span>
+                                </small>
                                 <div id={`details-${place.id}`} className="d-none p-2">
                                     <div>
                                         {rest.length > 0 && <span className="secondary-name">{rest.join(",")}</span>}
-                                        <span className="ps-1 btn-delete" onClick={() => handleDelete(place.id)}>
-                                            Elimina luogo
-                                        </span>
+                                        <small className="ps-1 btn-delete" onClick={() => handleDelete(place.id)}>
+                                            elimina luogo
+                                        </small>
                                     </div>
                                     <div>
                                         <span

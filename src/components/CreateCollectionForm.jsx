@@ -1,5 +1,5 @@
 import { useState, useContext } from "react";
-import CollectionsContext from '../context/CollectionsContext'; 
+import CollectionsContext from '../context/CollectionsContext';
 import SessionContext from '../context/SessionContext';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
@@ -19,7 +19,7 @@ const CreateCollectionForm = () => {
             const { data, error } = await supabase
                 .from("collections")
                 .insert([{
-                    user_id: session.user.id,  
+                    user_id: session.user.id,
                     name: collectionName,
                     color: collectionColor
                 }])
@@ -43,9 +43,11 @@ const CreateCollectionForm = () => {
     };
 
     return (
-        <div>
+        <div className="w-100 container">
+            <h4 className="pt-5 underBlue txtWhite">Crea le tue raccolte</h4>
+            <p className="txtGrey ms-3">organizza i tuoi posti del cuore in raccolte divise come più preferisci</p>
             <form
-                className="d-flex flex-column gap-3"
+                className="d-flex flex-column align-items-start gap-3 ms-3"
                 onSubmit={(e) => {
                     e.preventDefault();
                     createCollection();
@@ -59,7 +61,7 @@ const CreateCollectionForm = () => {
                     className="form-control create-name"
                 />
                 <div>
-                    <label htmlFor="color" className="txtWhite ms-2">Scegli il colore</label>
+                    <label htmlFor="color" className="txtWhite">Scegli il colore</label>
                     <input
                         type="color"
                         className="ms-2"
