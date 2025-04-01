@@ -2,8 +2,9 @@ import React, { useState, useRef, useEffect, useContext } from "react";
 import 'react-toastify/dist/ReactToastify.css';
 import SearchContext from "../context/SearchContext";
 import CollectionsContext from "../context/CollectionsContext";
+import SessionContext from "../context/SessionContext";
 import supabase from "../supabase/client";
-import { toast, ToastContainer } from 'react-toastify';
+import { toast } from 'react-toastify';
 import MuiModal from "./MuiModal";
 
 const searchPlaceByName = async (query) => {
@@ -36,6 +37,8 @@ export default function Search() {
     const { setPlaces } = useContext(SearchContext);
     const { collections } = useContext(CollectionsContext);
     const [user, setUser] = useState(null);
+    const session = useContext(SessionContext);
+
 
     useEffect(() => {
         const fetchUser = async () => {
@@ -86,10 +89,12 @@ export default function Search() {
         setSelectedPlace(place);
         setOpenModal(true);
         setResultsVisible(false);
+        setQuery("");
+        window.dispatchEvent(new CustomEvent("scrollToMarker", { detail: place.place_id })); 
     };
 
     const handleSavePlace = async (place, collection) => {
-        if (!user) {
+        if (!session) {
             toast.error("Devi essere loggato per salvare un luogo");
             return;
         }
@@ -142,6 +147,7 @@ export default function Search() {
     const handleClickOutside = (event) => {
         if (searchResultsRef.current && !searchResultsRef.current.contains(event.target)) {
             setResultsVisible(false);
+            setQuery("");
         }
     };
 
@@ -187,18 +193,16 @@ export default function Search() {
                 </div>
             )}
 
-            {/* Utilizzo del componente MuiModal */}
             {selectedPlace && (
                 <MuiModal
                     open={openModal}
                     onClose={() => setOpenModal(false)}
                     selectedPlace={selectedPlace}
                     collections={collections}
-                    onSave={handleSavePlace} // Passa la funzione di salvataggio
+                    onSave={handleSavePlace} 
                 />
             )}
 
-            <ToastContainer position="bottom-right" />
         </div>
     );
 }
