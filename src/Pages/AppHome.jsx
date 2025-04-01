@@ -2,7 +2,7 @@ import { useContext, useRef } from "react";
 import { useNavigate } from "react-router";
 import SessionContext from "../context/SessionContext";
 import 'animate.css';
-
+import { ToastContainer } from "react-toastify";
 
 export default function AppHome() {
     const session = useContext(SessionContext);
@@ -102,6 +102,17 @@ export default function AppHome() {
                         inizia!
                     </button>
                 </div>
+                <ToastContainer position="bottom-right"
+                    autoClose={2000}
+                    hideProgressBar={false}
+                    newestOnTop={false}
+                    closeOnClick={true}
+                    rtl={false}
+                    pauseOnFocusLoss
+                    draggable
+                    pauseOnHover
+                    theme="light"
+                />
             </div>
         </>
     )

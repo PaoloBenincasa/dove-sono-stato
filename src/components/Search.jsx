@@ -90,22 +90,73 @@ export default function Search() {
         setOpenModal(true);
         setResultsVisible(false);
         setQuery("");
-        window.dispatchEvent(new CustomEvent("scrollToMarker", { detail: place.place_id })); 
+        // window.dispatchEvent(new CustomEvent("scrollToMarker", { detail: place.place_id })); 
     };
+
+    // const handleSavePlace = async (place, collection) => {
+    //     if (!session) {
+    //         toast.error("Devi essere loggato per salvare un luogo");
+    //         return;
+    //     }
+
+    //     if (!collection) {
+    //         toast.error("Seleziona una raccolta");
+    //         return;
+    //     }
+
+    //     try {
+    //         const { error } = await supabase
+    //             .from('saved_places')
+    //             .insert([{
+    //                 name: place.display_name,
+    //                 latitude: parseFloat(place.lat),
+    //                 longitude: parseFloat(place.lon),
+    //                 user_id: user.id,
+    //                 collection_id: collection,
+    //             }]);
+
+    //         if (error) {
+    //             if (error.code === '23505') { 
+    //                 toast.error("Questo luogo è già stato salvato in questa raccolta.");
+    //             } else {
+    //                 toast.error("Errore durante il salvataggio");
+    //                 console.error('Errore nel salvataggio:', error);
+    //             }
+    //             return;
+    //         }
+
+    //         toast.success("Luogo salvato con successo!");
+    //         setSelectedPlace(null);
+    //         setOpenModal(false);
+
+    //         window.dispatchEvent(new CustomEvent("placeSaved", {
+    //             detail: {
+    //                 name: place.display_name,
+    //                 latitude: parseFloat(place.lat),
+    //                 longitude: parseFloat(place.lon),
+    //                 user_id: user.id,
+    //                 collection_id: collection,
+    //             },
+    //         }))
+    //     } catch (err) {
+    //         console.error('Errore nel salvataggio:', err);
+    //         toast.error("Errore durante il salvataggio");
+    //     }
+    // };
 
     const handleSavePlace = async (place, collection) => {
         if (!session) {
             toast.error("Devi essere loggato per salvare un luogo");
             return;
         }
-
+    
         if (!collection) {
             toast.error("Seleziona una raccolta");
             return;
         }
-
+    
         try {
-            const { error } = await supabase
+            const { data, error } = await supabase
                 .from('saved_places')
                 .insert([{
                     name: place.display_name,
@@ -113,10 +164,11 @@ export default function Search() {
                     longitude: parseFloat(place.lon),
                     user_id: user.id,
                     collection_id: collection,
-                }]);
-
+                }])
+                .select(); // Aggiungiamo .select() per ottenere l'ID del luogo inserito
+    
             if (error) {
-                if (error.code === '23505') { 
+                if (error.code === '23505') {
                     toast.error("Questo luogo è già stato salvato in questa raccolta.");
                 } else {
                     toast.error("Errore durante il salvataggio");
@@ -124,20 +176,24 @@ export default function Search() {
                 }
                 return;
             }
-
-            toast.success("Luogo salvato con successo!");
-            setSelectedPlace(null);
-            setOpenModal(false);
-
-            window.dispatchEvent(new CustomEvent("placeSaved", {
-                detail: {
-                    name: place.display_name,
-                    latitude: parseFloat(place.lat),
-                    longitude: parseFloat(place.lon),
-                    user_id: user.id,
-                    collection_id: collection,
-                },
-            }))
+    
+            if (data && data.length > 0) {
+                toast.success("Luogo salvato con successo!");
+                setSelectedPlace(null);
+                setOpenModal(false);
+    
+                window.dispatchEvent(new CustomEvent("placeSaved", {
+                    detail: data[0], // Passiamo l'intero oggetto data[0]
+                }));
+    
+                window.dispatchEvent(new CustomEvent("scrollToMarker", {
+                    detail: data[0].id, // Passiamo l'ID corretto
+                }));
+            } else {
+                toast.error("Errore durante il salvataggio: nessun dato restituito.");
+                console.error('Errore nel salvataggio: nessun dato restituito.');
+            }
+    
         } catch (err) {
             console.error('Errore nel salvataggio:', err);
             toast.error("Errore durante il salvataggio");

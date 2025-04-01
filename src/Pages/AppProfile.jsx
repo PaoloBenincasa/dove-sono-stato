@@ -66,9 +66,9 @@ export default function AppProfile() {
 
 
     // aggiungo un nuovo luogo alla lista
-    const handleSave = (newPlace) => {
-        setSavedPlaces((prevPlaces) => [...prevPlaces, newPlace]);
-    };
+    // const handleSave = (newPlace) => {
+    //     setSavedPlaces((prevPlaces) => [...prevPlaces, newPlace]);
+    // };
 
     // elimino un luogo
     const handleDelete = async (id) => {
@@ -93,15 +93,19 @@ export default function AppProfile() {
     };
 
     const handleScrollToPlace = (placeId) => {
+        const place = savedPlaces.find(p => p.id === placeId);
+        if (!place?.latitude || !place?.longitude) return;
         // prima vado alla sezione della Map
         if (mapSectionRef.current) {
             mapSectionRef.current.scrollIntoView({ behavior: "smooth", block: "start" });
         }
 
+
         // vado al marker corrispondente al luogo
         window.dispatchEvent(new CustomEvent("scrollToMarker", { detail: placeId }));
 
     };
+
 
     const toggleInfo = (placeId) => {
         const details = document.querySelector(`#details-${placeId}`);
@@ -119,12 +123,12 @@ export default function AppProfile() {
     };
 
     const filteredPlacesList = selectedCollectionsFilter.length > 0
-        ? savedPlaces.filter(place => 
-            place.collection_id && 
+        ? savedPlaces.filter(place =>
+            place.collection_id &&
             selectedCollectionsFilter.includes(place.collection_id) &&
             place.name.toLowerCase().includes(searchTerm.toLowerCase())
         )
-        : savedPlaces.filter(place=> place.name.toLowerCase().includes(searchTerm.toLowerCase()));
+        : savedPlaces.filter(place => place.name.toLowerCase().includes(searchTerm.toLowerCase()));
 
     useEffect(() => {
         const handlePlaceSaved = (event) => {
@@ -150,9 +154,13 @@ export default function AppProfile() {
                     <CreateCollectionForm setCollections={setCollections} collections={collections} />
                 </div>
             </div>
-            <div className="map-container" ref={mapSectionRef}>
+            <div
+                className="map-container"
+                ref={mapSectionRef}
+            >
                 <Map
                     savedPlaces={filteredPlaces}
+                    setSavedPlaces={setSavedPlaces}
                     updateCollections={updateCollections}
                     handleScrollToPlace={handleScrollToPlace}
                 />
@@ -206,6 +214,7 @@ export default function AppProfile() {
                                 <span
                                     className="main-name"
                                     onClick={() => handleScrollToPlace(place.id)}
+                                    // onClick={() => window.dispatchEvent(new CustomEvent("scrollToMarker", { detail: place.id }))}
                                 >
                                     {mainName}
                                 </span>

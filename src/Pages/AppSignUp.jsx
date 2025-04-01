@@ -66,7 +66,7 @@ function AppSignUp() {
                             </div>
 
                             <button type="submit" className="btn btn-search mb-2 mt-1">Submit</button>
-                            <p>Hai già un account? <Link to={`/signin`}>accedi</Link> </p>
+                            <p>Hai già un account? <Link to={`/signin`} className="log text-decoration-none">accedi</Link> </p>
 
                         </form>
                         <ToastContainer position="bottom-right"

@@ -6,10 +6,11 @@ import supabase from "../supabase/client";
 import CollectionsContext from "../context/CollectionsContext"; 
 
 
-export default function Map({ savedPlaces }) {
+export default function Map({ savedPlaces, setSavedPlaces }) {
   const { collections, selectedCollections, handleCollectionChange, handleDeleteCollection } = useContext(CollectionsContext);
   const mapRef = useRef(null);
-  const places = savedPlaces.filter(place => selectedCollections.includes(place.collection_id));
+  // const places = savedPlaces.filter(place => selectedCollections.includes(place.collection_id));
+  const places = savedPlaces;
 
 
   const getMarkerColor = (collectionId) => {
@@ -27,11 +28,15 @@ export default function Map({ savedPlaces }) {
   };
 
   useEffect(() => {
+    console.log("Luoghi salvati in Map:", savedPlaces);
+
     const handleScrollToMarker = (event) => {
       const placeId = event.detail;
+      console.log("ID luogo ricevuto:", placeId);
+
       const place = savedPlaces.find((p) => p.id === placeId);
 
-      if (place && mapRef.current) {
+      if (place && place.latitude && place.longitude && mapRef.current) {
         mapRef.current.flyTo([place.latitude, place.longitude], 15);
       }
     };
@@ -42,6 +47,7 @@ export default function Map({ savedPlaces }) {
     };
   }, [savedPlaces]);
 
+  console.log("Map renderizzata.");
 
 
   return (

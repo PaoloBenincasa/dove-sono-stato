@@ -10,7 +10,17 @@ function App() {
   return (
     <div className="vh-100">
       <RouterProvider router={router} />
-      <ToastContainer position='bottom-right' />
+      <ToastContainer position="bottom-right"
+                            autoClose={2000}
+                            hideProgressBar={false}
+                            newestOnTop={false}
+                            closeOnClick={true}
+                            rtl={false}
+                            pauseOnFocusLoss
+                            draggable
+                            pauseOnHover
+                            theme="light"
+                        />
 
     </div>
   )

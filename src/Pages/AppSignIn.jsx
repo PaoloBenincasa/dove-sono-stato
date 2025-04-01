@@ -45,7 +45,7 @@ function AppSignIn() {
                             </div>
 
                             <button type="submit" className="btn btn-search mb-3 mt-1">Submit</button>
-                            <p className="">Non hai ancora un account? <Link to={`/signup`} className="">registrati</Link> </p>
+                            <p className="">Non hai ancora un account? <Link to={`/signup`} className="text-decoration-none log">registrati</Link> </p>
 
                         </form>
                         <ToastContainer position="bottom-right"
