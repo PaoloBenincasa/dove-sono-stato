@@ -2,14 +2,12 @@ import { useContext, useEffect, useState, useRef } from "react";
 import { MapContainer, TileLayer, Marker, Popup } from "react-leaflet";
 import 'leaflet/dist/leaflet.css';
 import L from "leaflet";
-import supabase from "../supabase/client";
 import CollectionsContext from "../context/CollectionsContext"; 
 
 
 export default function Map({ savedPlaces, setSavedPlaces }) {
   const { collections, selectedCollections, handleCollectionChange, handleDeleteCollection } = useContext(CollectionsContext);
   const mapRef = useRef(null);
-  // const places = savedPlaces.filter(place => selectedCollections.includes(place.collection_id));
   const places = savedPlaces;
 
 
@@ -28,11 +26,9 @@ export default function Map({ savedPlaces, setSavedPlaces }) {
   };
 
   useEffect(() => {
-    console.log("Luoghi salvati in Map:", savedPlaces);
 
     const handleScrollToMarker = (event) => {
       const placeId = event.detail;
-      console.log("ID luogo ricevuto:", placeId);
 
       const place = savedPlaces.find((p) => p.id === placeId);
 

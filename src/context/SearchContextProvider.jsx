@@ -9,7 +9,7 @@ const SearchContextProvider = ({ children }) => {
     const debounceTimeout = useRef(null);
 
     const searchPlaceByName = async (query) => {
-        const url = `https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(query)}&format=json&addressdetails=1&limit=30`;
+        const url = `https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(query)}&format=json&addressdetails=1&limit=100`;
 
         try {
             const response = await fetch(url, {
@@ -32,7 +32,9 @@ const SearchContextProvider = ({ children }) => {
         try {
             setLoading(true);
             setError(null);
+            // chiamata asincrona a searchPlaceByName passandogli la stringa di ricerca cioè searchValue
             const data = await searchPlaceByName(searchValue);
+            // aggiorno setPlaces coi risultati della ricerca
             setPlaces(data.length > 0 ? data : []);
             setLoading(false);
         } catch (err) {
@@ -41,6 +43,7 @@ const SearchContextProvider = ({ children }) => {
         }
     };
 
+    // applico il debounce
     const handleInputChange = (e) => {
         const value = e.target.value;
         if (debounceTimeout.current) clearTimeout(debounceTimeout.current);
@@ -49,8 +52,10 @@ const SearchContextProvider = ({ children }) => {
             : setPlaces([]);
     };
 
+    // aggiorno selectedPlace con il luogo 
     const selectPlace = (place) => setSelectedPlace(place);
 
+    // quando il componente viene smontato annullo il debounce
     useEffect(() => () => {
         if (debounceTimeout.current) clearTimeout(debounceTimeout.current);
     }, []);

@@ -6,6 +6,7 @@ const CollectionsContextProvider = ({ children }) => {
   const [collections, setCollections] = useState([]);
   const [selectedCollections, setSelectedCollections] = useState([]);
 
+  // fetcho le raccolte a ogni montaggio del componente
   useEffect(() => {
     const fetchCollections = async () => {
       const { data, error } = await supabase
@@ -22,16 +23,21 @@ const CollectionsContextProvider = ({ children }) => {
     fetchCollections();
   }, []);
 
+
+  // gestisce la selezione e deselezione di una raccolta in Map
   const handleCollectionChange = (collectionId) => {
     setSelectedCollections((prev) => {
       if (prev.includes(collectionId)) {
+        // se l'id della raccolta è già presente, la rimuovo da selectedCollections
         return prev.filter((id) => id !== collectionId);
       } else {
+        // altrimenti l'aggiungo
         return [...prev, collectionId];
       }
     });
   };
 
+  // cancello la collezione
   const handleDeleteCollection = async (id) => {
     const confirmDelete = window.confirm("Sei sicuro di voler eliminare questa raccolta?");
     
@@ -44,7 +50,9 @@ const CollectionsContextProvider = ({ children }) => {
       if (error) {
         console.error("Errore nell'eliminazione della raccolta:", error);
       } else {
+        // rimuovo la raccolta da collections
         setCollections((prevCollections) => prevCollections.filter((collection) => collection.id !== id));
+        // aggiorno lo stato selectedCollections rimuovendo la raccolta se presente
         setSelectedCollections((prev) => prev.filter((collectionId) => collectionId !== id));
       }
     }

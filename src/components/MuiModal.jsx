@@ -29,24 +29,16 @@ function MuiModal({ open, onClose, selectedPlace, collections, onSave }) {
     const anchorRef = useRef(null);
     const session = useContext(SessionContext);
 
-    // const handleSavePlace = () => {
-
-    //     if (selectedCollection && onSave) {
-    //         onSave(selectedPlace, selectedCollection);
-    //         onClose();
-    //     } else {
-    //         alert("Seleziona una raccolta prima di salvare il luogo!");
-    //     }
-    // };
-
+    // gestisco il salvataggio eseguendo le istruzioni impostate in search
     const handleSavePlace = () => {
         if (!selectedCollection) {
             alert("Seleziona una raccolta prima di salvare il luogo!");
             return;
         }
-    
+        // se onSave è stata passata correttamente la chiamo passando luogo selezionato e raccolta selezionata
         if (onSave) {
             onSave(selectedPlace, selectedCollection);
+            // chiudo il modale
             onClose();
         }
     };
@@ -86,7 +78,6 @@ function MuiModal({ open, onClose, selectedPlace, collections, onSave }) {
                     )}
                 </div>
                 {session ?
-
                     <div className="mt-3 mb-3">
                         <FormControl fullWidth>
                             <InputLabel id="select-collection-label">Seleziona una raccolta</InputLabel>

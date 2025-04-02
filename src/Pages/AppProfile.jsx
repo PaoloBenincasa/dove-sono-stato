@@ -1,7 +1,6 @@
 import { useEffect, useState, useContext, useRef } from "react";
 import supabase from "../supabase/client";
 import Map from "../components/Map";
-import Search from "../components/Search";
 import CreateCollectionForm from "../components/CreateCollectionForm";
 import SessionContext from "../context/SessionContext";
 import CollectionsContext from "../context/CollectionsContext";
@@ -16,30 +15,34 @@ export default function AppProfile() {
     const mapSectionRef = useRef(null);
     const [selectedCollectionsFilter, setSelectedCollectionsFilter] = useState([]);
     const [searchTerm, setSearchTerm] = useState("");
-
-
-    // prendo le raccolte dal contesto
     const { collections, setCollections } = useContext(CollectionsContext);
 
-    // fetcho i luoghi salvati
+    // se la session è presente fetcho i luoghi salvati
     useEffect(() => {
         if (session) {
             const fetchSavedPlaces = async () => {
+                // recupero i dati che mi servono da saved_places
                 const { data, error } = await supabase
                     .from("saved_places")
                     .select("*, collections(id, name, color)")
+                    // e filtro i risultati per recuperare solo i luoghi salvati dall'utente corrente
                     .eq("user_id", session.user.id);
 
                 if (error) {
+                    // aggiorno lo stato savedPlaces con i dati recuperati dal db
                     console.error("Errore nel recupero dei luoghi:", error);
                 } else {
+                    // nel caso in cui data è undefined (non ho ancora iniziato a salvare luoghi) imposto un array vuoto
                     setSavedPlaces(data || []);
                 }
             };
+            // ora posso chiamare la funzione
             fetchSavedPlaces();
         }
     }, [session]);
 
+
+    // se c'è la sessione recupero le collections dell'utente
     useEffect(() => {
         if (session) {
             const fetchCollections = async () => {
@@ -60,20 +63,17 @@ export default function AppProfile() {
 
 
     // filtro i luoghi in base alla raccolta selezionata
+    // se ho selezionato almeno una raccolta
     const filteredPlaces = selectedCollections.length > 0
+        // eseguo filter su savedPlaces per prendere solo i posti della raccolta, cioè verifico se l'id della raccolta del luogo corrente è presente nella selectedCollections
         ? savedPlaces.filter(place => selectedCollections.includes(place.collection_id))
+        // se non ho selezionato nessuna raccolta, visualizzo tutti i posti senza filtarli
         : savedPlaces;
 
-
-    // aggiungo un nuovo luogo alla lista
-    // const handleSave = (newPlace) => {
-    //     setSavedPlaces((prevPlaces) => [...prevPlaces, newPlace]);
-    // };
 
     // elimino un luogo
     const handleDelete = async (id) => {
         const confirmDelete = window.confirm("Sei sicuro di voler eliminare questo luogo?");
-
         if (confirmDelete) {
             const { error } = await supabase
                 .from("saved_places")
@@ -83,16 +83,19 @@ export default function AppProfile() {
             if (error) {
                 console.error("Errore nell'eliminazione del luogo:", error);
             } else {
+                // aggiorno savedPlaces rimuovendo il luogo eliminato, cioè creo un nuovo array con solo i luoghi il cui ID è diverso dall'ID del luogo eliminato
                 setSavedPlaces((prev) => prev.filter((place) => place.id !== id));
             }
         }
     };
 
+    // funzione di callback che viene passata a map e aggionra le raccolte in appProfile tramite il contesot
     const updateCollections = (updatedCollections) => {
         setCollections(updatedCollections);
     };
 
     const handleScrollToPlace = (placeId) => {
+        // trovo il posto corrispondente tramite l'id in savedPlaces
         const place = savedPlaces.find(p => p.id === placeId);
         if (!place?.latitude || !place?.longitude) return;
         // prima vado alla sezione della Map
@@ -100,13 +103,12 @@ export default function AppProfile() {
             mapSectionRef.current.scrollIntoView({ behavior: "smooth", block: "start" });
         }
 
-
         // vado al marker corrispondente al luogo
         window.dispatchEvent(new CustomEvent("scrollToMarker", { detail: placeId }));
 
     };
 
-
+    // per mostrare o meno le info del luogo
     const toggleInfo = (placeId) => {
         const details = document.querySelector(`#details-${placeId}`);
         if (details) {
@@ -114,29 +116,53 @@ export default function AppProfile() {
         }
     };
 
+    // funzione per gestire aggiunta o rimozione delle raccolte filtrate
     const handleCollectionFilterChange = (collectionId) => {
         setSelectedCollectionsFilter(prev =>
+            // verifico se la raccolta corrente sia già presente in prev
             prev.includes(collectionId)
+                // se è presente devo toglierla, quindi creo un nuovo array che contiene gli Id di raccolta diversi da collectionId
                 ? prev.filter(id => id !== collectionId)
+                // se non è presente la aggiungo, concatenando l'array precedente (prev) con il collectionId
                 : [...prev, collectionId]
         );
     };
 
+    // funzione che filtra la lista dei luoghi in base alle raccolte.
+    // dichiaro la costante filteredPlacesList il cui contenuto varierà in base alla condizione, cioè se selectedCollectionsFilter è maggiore di zero (abbiamo cioè selezionato almeno una raccolta da visualizzare)
     const filteredPlacesList = selectedCollectionsFilter.length > 0
         ? savedPlaces.filter(place =>
+            // verifico che il luogo abbia un collectionId valido
             place.collection_id &&
+            // verifico che la raccolta con l'id corrente sia presente in selectedCollectionsFilter
             selectedCollectionsFilter.includes(place.collection_id) &&
+            // verifico che il nome del luogo includa il termine di ricerca (entrambi convertiti in minuscolo)
             place.name.toLowerCase().includes(searchTerm.toLowerCase())
         )
+        // se non ho selezionato nessuna raccolta, filtro semplicemente per nome
         : savedPlaces.filter(place => place.name.toLowerCase().includes(searchTerm.toLowerCase()));
 
-    useEffect(() => {
-        const handlePlaceSaved = (event) => {
-            setSavedPlaces((prevPlaces) => [...prevPlaces, event.detail]);
-        };
 
+    // uso questo hook per mettere in comunicazione Search e AppProfile
+    useEffect(() => {
+        const handlePlaceSaved = async (event) => {
+            const {data, error} = await supabase
+            .from("saved_places")
+            .select("*, collections(id, name, color)")
+            .eq("id", event.detail.id)
+            .single()
+
+            if (error) {
+                toast.error("Errore nel recupero del luogo aggiornato:", error);
+                return;
+            }
+            // aggiorno savedPlace col nuovo luogo salvato
+            setSavedPlaces((prevPlaces) => [...prevPlaces.filter(place => place.id !== event.detail.id), data]);
+        };
+        // aggiungo un listener all'evento placeSaved per lanciare handlePlaceSaved
         window.addEventListener("placeSaved", handlePlaceSaved);
 
+        // rimuovo il listener quando non è più necessario
         return () => {
             window.removeEventListener("placeSaved", handlePlaceSaved);
         };
@@ -214,7 +240,6 @@ export default function AppProfile() {
                                 <span
                                     className="main-name"
                                     onClick={() => handleScrollToPlace(place.id)}
-                                    // onClick={() => window.dispatchEvent(new CustomEvent("scrollToMarker", { detail: place.id }))}
                                 >
                                     {mainName}
                                 </span>
