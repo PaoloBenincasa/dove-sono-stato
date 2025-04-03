@@ -10,11 +10,11 @@ const PlaceMap = ({ lat, lon, displayName }) => {
             <Marker position={[lat, lon]} icon={L.divIcon({
                 className: "custom-div-icon",
                 html: `<div style=
-                "background-color: red; 
-                width: 15px; 
-                height: 15px; 
+                "background-color: yellow; 
+                width: 16px; 
+                height: 16px; 
                 border-radius: 50%; 
-                border: 2px solid white;
+                border: 4px solid blue;
                 ">
                 </div>`,
                 iconSize: [20, 20],
