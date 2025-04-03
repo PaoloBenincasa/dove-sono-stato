@@ -158,10 +158,7 @@ export default function Search() {
                     detail: data[0], 
                 }));
     
-                // invio l'evento scrolltomarker per notificare a map di scrollare al marker del luogo salvato
-                window.dispatchEvent(new CustomEvent("scrollToMarker", {
-                    detail: data[0].id, 
-                }));
+                
             } else {
                 toast.error("Errore durante il salvataggio: nessun dato restituito.");
                 console.error('Errore nel salvataggio: nessun dato restituito.');

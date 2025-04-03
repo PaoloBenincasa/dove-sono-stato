@@ -29,9 +29,9 @@ const CreateCollectionForm = () => {
                 console.error("Errore nella creazione della raccolta:", error);
                 return;
             }
-
+            // aggiorno l'elenco delle raccolte
             setCollections(prevCollections => [...prevCollections, ...data]);
-
+            // reimposto nome e colore
             setCollectionName("");
             setCollectionColor("#000000");
 

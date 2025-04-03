@@ -17,6 +17,9 @@ const CollectionsContextProvider = ({ children }) => {
         console.error("Errore nel recuperare le raccolte:", error);
       } else {
         setCollections(data);
+        if (data) {
+          setSelectedCollections(data.map(collection => collection.id));
+        }
       }
     };
 

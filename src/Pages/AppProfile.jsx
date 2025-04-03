@@ -115,20 +115,21 @@ export default function AppProfile() {
             details.classList.toggle("d-none");
         }
     };
-
-    // funzione per gestire aggiunta o rimozione delle raccolte filtrate
+    
+    // // funzione per gestire aggiunta o rimozione delle raccolte filtrate
     const handleCollectionFilterChange = (collectionId) => {
-        setSelectedCollectionsFilter(prev =>
-            // verifico se la raccolta corrente sia già presente in prev
-            prev.includes(collectionId)
-                // se è presente devo toglierla, quindi creo un nuovo array che contiene gli Id di raccolta diversi da collectionId
-                ? prev.filter(id => id !== collectionId)
-                // se non è presente la aggiungo, concatenando l'array precedente (prev) con il collectionId
-                : [...prev, collectionId]
-        );
+        setSelectedCollectionsFilter((prev) => {
+            // se l'id della raccolta è presente nello stato precedente di setSelectedCollectionsFilter, filtro prev e restituisco tutte le raccolte con id diverso
+            if (prev.includes(collectionId)) {
+                return prev.filter((id) => id !== collectionId);
+                // altrimenti aggiungo la raccolta passata all'array
+            } else {
+                return [...prev, collectionId];
+            }
+        });
     };
-
-    // funzione che filtra la lista dei luoghi in base alle raccolte.
+    
+    // funzione che filtra la lista dei luoghi in base alle raccolte e al termine di ricerca
     // dichiaro la costante filteredPlacesList il cui contenuto varierà in base alla condizione, cioè se selectedCollectionsFilter è maggiore di zero (abbiamo cioè selezionato almeno una raccolta da visualizzare)
     const filteredPlacesList = selectedCollectionsFilter.length > 0
         ? savedPlaces.filter(place =>
@@ -141,16 +142,17 @@ export default function AppProfile() {
         )
         // se non ho selezionato nessuna raccolta, filtro semplicemente per nome
         : savedPlaces.filter(place => place.name.toLowerCase().includes(searchTerm.toLowerCase()));
+  
 
 
     // uso questo hook per mettere in comunicazione Search e AppProfile
     useEffect(() => {
         const handlePlaceSaved = async (event) => {
-            const {data, error} = await supabase
-            .from("saved_places")
-            .select("*, collections(id, name, color)")
-            .eq("id", event.detail.id)
-            .single()
+            const { data, error } = await supabase
+                .from("saved_places")
+                .select("*, collections(id, name, color)")
+                .eq("id", event.detail.id)
+                .single()
 
             if (error) {
                 toast.error("Errore nel recupero del luogo aggiornato:", error);
